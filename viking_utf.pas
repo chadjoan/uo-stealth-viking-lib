@@ -30,6 +30,7 @@ begin
 		//assert(isValidDchar(c));
 		buf_[0] := uint8(cp);
 		Result := 1;
+		Exit;
 	end;
 	if (cp <= $7FF) then
 	begin
@@ -37,6 +38,7 @@ begin
 		buf_[0] := uint8($C0 or (cp shr 6));
 		buf_[1] := uint8($80 or (cp and $3F));
 		Result := 2;
+		Exit;
 	end;
 	if (cp <= $FFFF) then
 	begin
@@ -53,6 +55,7 @@ begin
 		buf_[1] := uint8($80 or ((cp shr 6) and $3F));
 		buf_[2] := uint8($80 or (cp and $3F));
 		Result := 3;
+		Exit;
 	end;
 	if (cp <= $10FFFF) then
 	begin
@@ -62,6 +65,7 @@ begin
 		buf_[2] := uint8($80 or ((cp shr 6) and $3F));
 		buf_[3] := uint8($80 or (cp and $3F));
 		Result := 4;
+		Exit;
 	end;
 
 	//assert(!isValidDchar(c));
@@ -88,12 +92,12 @@ type
 function to_utf8(text_ : String) : uint8_array;
 var
 	output     : uint8_array;
-	ipos       : int64;
-	opos       : int64;
+	ipos       : index_t;
+	opos       : index_t;
 	codePoint  : uint32;
 	buffer     : utf8_x4_t;
-	bufferSize : uint32;
-	idx        : uint32;
+	bufferSize : size_t;
+	idx        : index_t;
 	allocLevel : uint8;
 	allocationEscalations : utf8_encoder_allocation_escalations_t;
 	allocLevelMax : uint8;
@@ -118,13 +122,12 @@ begin
 		bufferSize := encode_utf8(buffer, codePoint);
 
 		// Allocate more space when needed.
-		if (bufferSize + ipos) > length(output) then
+		if (opos + bufferSize) > length(output) then
 		begin
+			allocLevel := allocLevel + 1;
 			if allocLevel < allocLevelMax then
-			begin
-				allocLevel := allocLevel + 1;
-				SetLength(output, (length(text_) * allocationEscalations[allocLevel]) div 100);
-			end
+				SetLength(output,
+					(length(text_) * allocationEscalations[allocLevel]) div 100)
 			else
 				SetLength(output, length(output)*2);
 		end;

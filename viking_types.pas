@@ -20,6 +20,10 @@ type
 	// be upon you!
 	index_t = int32;
 
+	/// For unsigned integers that need to be able to span the largest possible
+	/// array's indexing range, but aren't indices (ex: lengths).
+	size_t = index_t;
+
 	int8_array  = Array of int8;
 	int16_array = Array of int16;
 	int32_array = Array of int32;

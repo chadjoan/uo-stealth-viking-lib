@@ -14,8 +14,8 @@ function mk_vec2i32(x_ : int32; y_ : int32) : vector2int32_rec;
 function vec2i32_add(a_ : vector2int32_rec;  b_ : vector2int32_rec) : vector2int32_rec;
 function vec2i32_to_string(vec_ : vector2int32_rec) : String;
 
-function distance_chebyshev_i32(x1, y1, x2, y2 : int32) : int32;
-function distance_chebyshev_v2i32(v1, v2 : vector2int32_rec) : int32;
+function distance_chebyshev_i32(x1, y1, x2, y2 : int32) : uint32;
+function distance_chebyshev_v2i32(v1, v2 : vector2int32_rec) : uint32;
 
 implementation
 
@@ -45,7 +45,7 @@ end;
 // TODO: This should end up in a math module or something. Just don't make
 // TODO:  it public in this module.
 // Abs function that doesn't return a berping floating point number.
-function abs_i32(n : int32) : int32;
+function abs_i32(n : int32) : uint32;
 begin
 	if n < 0 then
     	Result := -n
@@ -54,7 +54,7 @@ begin
 end;
 
 
-function distance_chebyshev_i32(x1, y1, x2, y2 : int32) : int32;
+function distance_chebyshev_i32(x1, y1, x2, y2  :int32) : uint32;
 var
 	adx, ady : int32;
 begin
@@ -66,7 +66,7 @@ begin
 		Result := ady
 end;
 
-function distance_chebyshev_v2i32(v1, v2 : vector2int32_rec) : int32;
+function distance_chebyshev_v2i32(v1, v2 :vector2int32_rec) : uint32;
 begin
 	Result := distance_chebyshev_i32(v1.x, v1.y, v2.x, v2.y);
 end;
